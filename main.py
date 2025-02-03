@@ -16,10 +16,11 @@ class UserInput(BaseModel):
 @app.post("/chat/")
 async def chat(user_input: UserInput):
     try:
-        response = openai.ChatCompletion.create(
+        client = openai.OpenAI(api_key=openai.api_key)
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[{"role": "user", "content": user_input.message}]
         )
-        return {"response": response["choices"][0]["message"]["content"]}
+        return {"response": response.choices[0].message.content}
     except Exception as e:
         return {"error": str(e)}
